@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String    @id @default(cuid())
+  clerkId             String    @unique
+  email               String    @unique
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  hasPaid             Boolean   @default(false)
+  /// {
+  /// quantity: number,
+  /// id: string
+  /// }
+  portfolio           Json?     @default("[]")
+  /// {
+  /// netWorth: number,
+  /// coinsWorth: {
+  /// [coinId: string]: number
+  /// }
+  /// }
+  netWorthHistory     Json?     @default("[]")
+  lastNetWorthUpdate  DateTime?
+  portfolioCreatedAt  DateTime?
+  encryptedPrivatekey String?
+  hasRedeemed         Boolean   @default(false)
+  walletAddress       String?
+}
+
+model Coin {
+  id                      String   @id
+  symbol                  String
+  name                    String
+  solana_contract_address String
+  current_price           Float?
+  last_price_update       DateTime @default(now())
+  metadata                Json?
+  active                  Boolean  @default(false)
+}
